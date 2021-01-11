@@ -24,6 +24,12 @@ function BST() {
   this.InOrder = InOrder;
   this.predOrder = preOrder;
   this.postOrder = postOrder;
+  this.getMinValue = getMinValue
+  this.getMaxValue = getMaxValue
+  this.findSpecificData = findSpecificData
+  this.getSmallestValue=getSmallestValue
+  this.remove = remove;
+  this.removeNode = removeNode;
 }
 
 function insertNewNode(data) {
@@ -55,7 +61,7 @@ function insertNewNode(data) {
 function InOrder(nodeToVist) {
   if (nodeToVist !== null) {
     InOrder(nodeToVist.left);
-    console.log(`node : --> ${nodeToVist.display()} is getting a visiting day`);
+    console.log(`node : --> ${nodeToVist.display()} is getting an IN-ORDER visiting day`);
     InOrder(nodeToVist.right);
   }
 }
@@ -76,6 +82,91 @@ function postOrder(nodeToVist){
     }
 }
 
+function getMinValue(){
+  let currentNode = this.rootNode
+  while(currentNode.left !== null){
+    currentNode = currentNode.left
+  }
+  return `Here is the Min Value data ---> ${currentNode.data}`
+}
+
+
+function getMaxValue(){
+  let currentNode = this.rootNode
+  while(currentNode.right !== null){
+    currentNode = currentNode.right
+  }
+  return `Here is the Max Value data ---> ${currentNode.data}`
+}
+
+function findSpecificData(data){
+  let currentNode = this.rootNode
+  while(currentNode && currentNode.data !== data){
+    if(data < currentNode.left){
+      currentNode = currentNode.left
+    }else{
+      currentNode = currentNode.right
+    }
+  }
+
+  return currentNode
+
+}
+
+function getSmallestValue(currentNode){
+  if(currentNode.left === null){
+    return currentNode
+  }else{
+    return getSmallestValue(currentNode.left)
+  }
+
+}
+
+
+function remove(data){
+  rootNode = removeNode(this.rootNode,data)
+}
+
+function removeNode(currentNode,data){
+  if(currentNode === null){
+    return null
+  }
+  
+  if(data === currentNode.data){
+    // node has no children
+    if(currentNode.left === null && currentNode.right === null){
+      return null
+    }
+
+    // have no left child
+    if(currentNode.left === null){
+      return currentNode.right
+    }
+
+    // have no right child
+    if(currentNode.right === null){
+      return currentNode.left
+    }
+
+    // have two children
+    let tempNode = getSmallestValue(currentNode.right)
+    currentNode.data = tempNode.data
+    currentNode.right = this.removeNode(currentNode.right,tempNode.data)
+
+    return currentNode
+
+  }else if( data < currentNode.data){
+    currentNode.left = this.removeNode(currentNode.left,data)
+    return currentNode
+  }
+
+  else{
+    currentNode.right = this.removeNode(currentNode.right,data)
+    return currentNode
+  }
+}
+
+
 
 const numbers = new BST();
 numbers.insertNewNode(5);
@@ -85,9 +176,33 @@ numbers.insertNewNode(10);
 numbers.insertNewNode(2);
 numbers.insertNewNode(11);
 numbers.insertNewNode(15);
+
+const minValue = numbers.getMinValue()
+console.log(`The Min Value in The BST is ====> ${minValue}`) 
+
+const maxValue = numbers.getMaxValue()
+console.log(`The Max Value in The BST is ====> ${maxValue}`) 
+
+const findVal = numbers.findSpecificData(10)
+if(findVal !== null){
+  console.log(`Data was found in BST`)
+}else{
+  console.log(`Data was not found in BST`)
+}
+
+// const removeVal = numbers.remove(5)
+// if(removeVal !== null){
+//   console.log(`Data to be REMOVED was found in BST`)
+// }else{
+//   console.log(`Data to be REMOVED was not found in BST`)
+// }
+
+
 console.log(`Inorder Traversal`)
 numbers.InOrder(numbers.rootNode)
 console.log('<----------------------->')
+
+
 const scores = new BST()
 scores.insertNewNode(5)
 scores.insertNewNode(9)
